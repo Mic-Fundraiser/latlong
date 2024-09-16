@@ -63,14 +63,14 @@ if st.button("Ottieni Coordinate"):
             with col1:
                 st.write(f"Latitudine: {result[0]}")
             with col2:
-                st.button("Copia", key="copy_lat", on_click=lambda: st.components.v1.html(f'<script>copyToClipboard("{result[0]}");</script>', height=0))
+                st.markdown(f'<button onclick="copyToClipboard(\'{result[0]}\')">Copia</button>', unsafe_allow_html=True)
             
             # Visualizza longitudine con pulsante di copia
             col3, col4 = st.columns([3, 1])
             with col3:
                 st.write(f"Longitudine: {result[1]}")
             with col4:
-                st.button("Copia", key="copy_lon", on_click=lambda: st.components.v1.html(f'<script>copyToClipboard("{result[1]}");</script>', height=0))
+                st.markdown(f'<button onclick="copyToClipboard(\'{result[1]}\')">Copia</button>', unsafe_allow_html=True)
             
             # Visualizzazione della mappa
             st.write("Posizione sulla mappa:")
