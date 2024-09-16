@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import streamlit.components.v1 as components
 
 # Funzione per ottenere latitudine e longitudine usando l'API di Google Maps
 def get_lat_long_google(address, api_key):
@@ -34,21 +35,23 @@ st.write("Questa app converte un indirizzo in coordinate geografiche utilizzando
 # Input per l'indirizzo
 address = st.text_input("Inserisci l'indirizzo (via, città, CAP):")
 
-# Funzione JavaScript per copiare il testo negli appunti
-js_code = """
-<script>
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        console.log('Testo copiato negli appunti');
-    }).catch(err => {
-        console.error('Errore nel copiare il testo: ', err);
-    });
-}
-</script>
-"""
-
-# Aggiungi il codice JavaScript alla pagina
-st.components.v1.html(js_code, height=0)
+# Componente personalizzato per il pulsante di copia
+def copy_button(text, button_text="Copia"):
+    components.html(
+        f"""
+        <button onclick="copyToClipboard('{text}')">{button_text}</button>
+        <script>
+        function copyToClipboard(text) {{
+            navigator.clipboard.writeText(text).then(function() {{
+                console.log('Copying to clipboard was successful!');
+            }}, function(err) {{
+                console.error('Could not copy text: ', err);
+            }});
+        }}
+        </script>
+        """,
+        height=30
+    )
 
 # Pulsante per avviare la geolocalizzazione
 if st.button("Ottieni Coordinate"):
@@ -63,14 +66,14 @@ if st.button("Ottieni Coordinate"):
             with col1:
                 st.write(f"Latitudine: {result[0]}")
             with col2:
-                st.markdown(f'<button onclick="copyToClipboard(\'{result[0]}\')">Copia</button>', unsafe_allow_html=True)
+                copy_button(result[0])
             
             # Visualizza longitudine con pulsante di copia
             col3, col4 = st.columns([3, 1])
             with col3:
                 st.write(f"Longitudine: {result[1]}")
             with col4:
-                st.markdown(f'<button onclick="copyToClipboard(\'{result[1]}\')">Copia</button>', unsafe_allow_html=True)
+                copy_button(result[1])
             
             # Visualizzazione della mappa
             st.write("Posizione sulla mappa:")
