@@ -34,6 +34,22 @@ st.write("Questa app converte un indirizzo in coordinate geografiche utilizzando
 # Input per l'indirizzo
 address = st.text_input("Inserisci l'indirizzo (via, città, CAP):")
 
+# Funzione JavaScript per copiare il testo negli appunti
+js_code = """
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        console.log('Testo copiato negli appunti');
+    }).catch(err => {
+        console.error('Errore nel copiare il testo: ', err);
+    });
+}
+</script>
+"""
+
+# Aggiungi il codice JavaScript alla pagina
+st.components.v1.html(js_code, height=0)
+
 # Pulsante per avviare la geolocalizzazione
 if st.button("Ottieni Coordinate"):
     if address:
@@ -41,8 +57,20 @@ if st.button("Ottieni Coordinate"):
             result = get_lat_long_google(address, API_KEY)
         if isinstance(result, tuple):
             st.success("Coordinate trovate!")
-            st.write(f"Latitudine: {result[0]}")
-            st.write(f"Longitudine: {result[1]}")
+            
+            # Visualizza latitudine con pulsante di copia
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                st.write(f"Latitudine: {result[0]}")
+            with col2:
+                st.button("Copia", key="copy_lat", on_click=lambda: st.components.v1.html(f'<script>copyToClipboard("{result[0]}");</script>', height=0))
+            
+            # Visualizza longitudine con pulsante di copia
+            col3, col4 = st.columns([3, 1])
+            with col3:
+                st.write(f"Longitudine: {result[1]}")
+            with col4:
+                st.button("Copia", key="copy_lon", on_click=lambda: st.components.v1.html(f'<script>copyToClipboard("{result[1]}");</script>', height=0))
             
             # Visualizzazione della mappa
             st.write("Posizione sulla mappa:")
