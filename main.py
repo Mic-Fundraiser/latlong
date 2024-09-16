@@ -19,6 +19,9 @@ def get_lat_long_google(address, api_key):
     except Exception as e:
         return f"Errore nella richiesta: {e}"
 
+# Configura la chiave API direttamente nel codice
+API_KEY = 'AIzaSyArBylVJ80cO8QsvhvQbpGZIoHOj3ESgcY'  # Sostituisci con la tua chiave API
+
 # Configurazione della pagina Streamlit
 st.set_page_config(page_title="Geolocalizzatore", page_icon="🌍")
 
@@ -28,17 +31,14 @@ st.title("🌍 Geolocalizzatore")
 # Descrizione dell'app
 st.write("Questa app converte un indirizzo in coordinate geografiche utilizzando l'API di Google Maps.")
 
-# Input per la chiave API
-api_key = st.text_input("Inserisci la tua chiave API di Google Maps:", type="password")
-
 # Input per l'indirizzo
 address = st.text_input("Inserisci l'indirizzo (via, città, CAP):")
 
 # Pulsante per avviare la geolocalizzazione
 if st.button("Ottieni Coordinate"):
-    if api_key and address:
+    if address:
         with st.spinner("Ricerca in corso..."):
-            result = get_lat_long_google(address, api_key)
+            result = get_lat_long_google(address, API_KEY)
         if isinstance(result, tuple):
             st.success("Coordinate trovate!")
             st.write(f"Latitudine: {result[0]}")
@@ -46,12 +46,12 @@ if st.button("Ottieni Coordinate"):
             
             # Visualizzazione della mappa
             st.write("Posizione sulla mappa:")
-            map_url = f"https://www.google.com/maps/embed/v1/place?key={api_key}&q={result[0]},{result[1]}"
+            map_url = f"https://www.google.com/maps/embed/v1/place?key={API_KEY}&q={result[0]},{result[1]}"
             st.components.v1.iframe(map_url, width=600, height=450, scrolling=False)
         else:
             st.error(result)
     else:
-        st.warning("Per favore, inserisci sia la chiave API che l'indirizzo.")
+        st.warning("Per favore, inserisci un indirizzo.")
 
 # Informazioni aggiuntive
-st.info("Nota: Assicurati di utilizzare una chiave API valida di Google Maps per far funzionare questa app.")
+st.info("Nota: Questa app utilizza una chiave API predefinita per Google Maps.")
